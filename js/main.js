@@ -34,6 +34,8 @@ function addCursor(){
     updateLabel($('#numCursors'), componentStats[0].number);
     updateCPS();
     cookieTotal -= componentStats[0].cost;
+    componentStats[0].cost = Math.round(componentStats[0].cost * 1.1);
+    updateLabel($('#cursorCost'), componentStats[0].cost);
   }
 }
 

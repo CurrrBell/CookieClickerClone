@@ -1,12 +1,12 @@
 var cookieTotal = 0;
-var cookiesPerMiliSecond = 0;
+var cookiesPerFrame = 0;
 var cookiesPerClick = 1;
 var componentStats = [
   {
     name: 'cursor',
     cost: 10,
     number: 0,
-    cpms: 0.0001,
+    CPS: 0.1 * (1/60),
   }
 ];
 var bankLabel = $('#bank');
@@ -29,26 +29,28 @@ function updateLabel(label, val){
 }
 
 function addCursor(){
-  componentStats[0].number++;
-  updateLabel($('#numCursors'), componentStats[0].number);
-  updateCPMS();
-  console.log(cookiesPerMiliSecond);
+  if(cookieTotal >= componentStats[0].cost){
+    componentStats[0].number++;
+    updateLabel($('#numCursors'), componentStats[0].number);
+    updateCPS();
+    cookieTotal -= componentStats[0].cost;
+  }
 }
 
-function updateCPMS(){
-  cookiesPerMiliSecond = 0;
+function updateCPS(){
+  cookiesPerFrame = 0;
   for(var i = 0; i < componentStats.length; i++){
-    var thisCPMS = componentStats[i].number * componentStats[i].cpms;
-    cookiesPerMiliSecond += thisCPMS;
+    var thisCPF = componentStats[i].number * componentStats[i].CPS;
+    cookiesPerFrame += thisCPF;
   }
-  updateLabel(rateLabel, cookiesPerMiliSecond * 1000);
+  updateLabel(rateLabel, cookiesPerFrame * 60);
 }
 
 ;(function(){
   function main(){
     window.requestAnimationFrame(main);
 
-    cookieTotal += cookiesPerMiliSecond;
+    cookieTotal += cookiesPerFrame;
     updateLabel(bankLabel, cookieTotal);
   }
 
